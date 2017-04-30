@@ -11,7 +11,7 @@ import 'package:angular2/src/core/linker/app_view.dart'
     show domRootRendererIsDirty;
 import '../../angular/managed_zone/interface.dart';
 import './dom_service.dart';
-import './dom_service_webdriver_testability.dart';
+//import './dom_service_webdriver_testability.dart';
 import '../../disposer/disposer.dart';
 
 export './dom_service.dart';
@@ -47,7 +47,7 @@ DomService createDomService(@Optional() @SkipSelf() DomService service,
 
   _singletonService = new DomService(zone, window);
 
-  createDomServiceWebdriverTestability(_singletonService).register();
+  //createDomServiceWebdriverTestability(_singletonService).register();
 
   disposer?.addFunction(() {
     _singletonService = null;

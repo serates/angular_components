@@ -129,7 +129,7 @@ class _SingleTableSelectionModelImpl<T> extends Observable<ChangeRecord>
     _totalEntitiesCountController.add(value);
   }
 
-  StreamController<CountGetter> _totalEntitiesCountController =
+  final StreamController<CountGetter> _totalEntitiesCountController =
       new StreamController.broadcast();
 
   @override
@@ -231,7 +231,7 @@ class _TableSelectionModelImpl<T> extends Observable<ChangeRecord>
     _totalEntitiesCountController.add(value);
   }
 
-  StreamController<CountGetter> _totalEntitiesCountController =
+  final StreamController<CountGetter> _totalEntitiesCountController =
       new StreamController.broadcast();
 
   @override

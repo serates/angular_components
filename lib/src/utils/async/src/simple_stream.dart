@@ -62,7 +62,7 @@ class SimpleStream<T> extends StreamView<T> implements EventSink<T> {
   bool _subscriptionRemoved = false;
 
   /// List of streams to cleanup.
-  static List<SimpleStream> _cleanupStreams = [];
+  static final _cleanupStreams = <SimpleStream>[];
 
   SimpleStream({bool isSync: false, bool runInZone: false})
       : _isSync = isSync,
@@ -323,12 +323,12 @@ class EmptySimpleStream<T> extends SimpleStream<T> {
 class SimpleStreamSubscription<T> implements StreamSubscription<T> {
   @override
   final bool isPaused = false;
+  final bool _cancelOnError;
   SimpleStream<T> _stream;
   StreamCallbackFunc<T> _callback;
   StreamCallContextFunc _contextFunc;
   Function _doneCallback;
   Function _onError;
-  bool _cancelOnError = false;
 
   factory SimpleStreamSubscription._empty() =>
       new SimpleStreamSubscription(null, null, null, null, false, null);

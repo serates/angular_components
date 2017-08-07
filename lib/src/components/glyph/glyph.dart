@@ -91,9 +91,7 @@ class GlyphComponent {
     _iconSet = value;
   }
 
-  bool _useMaterialIconsExtended = true;
-
-  bool get useMaterialIconsExtended => _useMaterialIconsExtended;
+  bool get useMaterialIconsExtended => true;
 
   final HtmlElement _element;
 

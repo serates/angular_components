@@ -226,12 +226,12 @@ class MaterialDropdownSelectComponent extends MaterialSelectBase
 
   @Output()
   Stream<FocusEvent> get focus => _focus.stream;
-  StreamController<FocusEvent> _focus =
+  final StreamController<FocusEvent> _focus =
       new StreamController<FocusEvent>.broadcast(sync: true);
 
   @Output()
   Stream<FocusEvent> get blur => _blur.stream;
-  StreamController<FocusEvent> _blur =
+  final StreamController<FocusEvent> _blur =
       new StreamController<FocusEvent>.broadcast(sync: true);
 
   void onFocus(FocusEvent event) {
@@ -430,7 +430,7 @@ class MaterialDropdownSelectComponent extends MaterialSelectBase
 // TODO(google): Move it to a common home to increase reusability.
 // TODO(google): Better comparison of characters to better support i18n.
 class ActivateItemOnKeyPressMixin {
-  static Map<int, String> _charCodeMap = <int, String>{};
+  static final Map<int, String> _charCodeMap = <int, String>{};
 
   String _enteredKeys = '';
 

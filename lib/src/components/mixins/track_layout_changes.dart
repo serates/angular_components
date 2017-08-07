@@ -6,10 +6,8 @@ import 'package:angular/angular.dart';
 
 import '../../utils/angular/properties/properties.dart';
 
-/**
- * Mixin for trackLayoutChanges property pass through to material popup to
- * avoid duplicate code in multiple components.
- */
+/// Mixin for trackLayoutChanges property pass through to material popup to
+/// avoid duplicate code in multiple components.
 class TrackLayoutChangesMixin {
   bool _trackLayoutChanges = true;
 

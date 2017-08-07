@@ -56,7 +56,7 @@ class StringSelectionOptions<T> extends SelectionOptions<T>
   /// The [ItemRenderer] that sanitizes options and queries before filtering.
   ItemRenderer _sanitizeString;
 
-  bool _shouldSort = false;
+  final bool _shouldSort;
 
   /// The list of options and optionally a function to convert the option into a
   /// string that can be used for filtering the list.

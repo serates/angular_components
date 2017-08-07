@@ -100,7 +100,7 @@ class ReorderListComponent implements OnDestroy {
   int _moveSourceIndex = -1;
   int _currentMoveIndex = -1;
   HtmlElement _dragSourceElement;
-  List<int> _selectedElementIndexes = [];
+  final _selectedElementIndexes = <int>[];
   // The index of the element that will indicate the first item selected
   // for shift multi selection.
   int _pivotItemIndex;

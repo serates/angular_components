@@ -5,6 +5,7 @@
 import 'dart:html';
 
 import 'package:angular/angular.dart';
+import 'package:angular_forms/angular_forms.dart';
 
 import '../../utils/angular/properties/properties.dart';
 import '../../utils/angular/reference/reference.dart';
@@ -75,38 +76,34 @@ export 'base_material_input.dart' show ValidityCheck, CharacterCounter;
 /// - `blur: FocusEvent` -- Fired when this input loses focus.
 ///
 @Component(
-    selector: 'material-input[multiline]',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    inputs: const [
-      'rows',
-      'maxRows',
-    ],
-    host: const {'class': 'themeable', '(focus)': 'focus()', 'tabIndex': '-1'},
-    providers: const [
-      DeferredValidator,
-      const Provider(NG_VALIDATORS,
-          useExisting: DeferredValidator, multi: true),
-      const Provider(ReferenceDirective,
-          useExisting: MaterialMultilineInputComponent),
-      const Provider(Focusable, useExisting: MaterialMultilineInputComponent),
-      const Provider(BaseMaterialInput,
-          useExisting: MaterialMultilineInputComponent)
-    ],
-    templateUrl: 'material_input_multiline.html',
-    styleUrls: const [
-      'material_input.scss.css',
-      'material_input_multiline.scss.css'
-    ],
-    directives: const [
-      DefaultValueAccessor,
-      FocusableDirective,
-      NgFor,
-      NgIf,
-      NgModel,
-      NgSwitch,
-      NgSwitchWhen,
-    ],
-    preserveWhitespace: false)
+  selector: 'material-input[multiline]',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: const {'class': 'themeable', '(focus)': 'focus()', 'tabIndex': '-1'},
+  providers: const [
+    DeferredValidator,
+    const Provider(NG_VALIDATORS, useExisting: DeferredValidator, multi: true),
+    const Provider(ReferenceDirective,
+        useExisting: MaterialMultilineInputComponent),
+    const Provider(Focusable, useExisting: MaterialMultilineInputComponent),
+    const Provider(BaseMaterialInput,
+        useExisting: MaterialMultilineInputComponent)
+  ],
+  templateUrl: 'material_input_multiline.html',
+  styleUrls: const [
+    'material_input.scss.css',
+    'material_input_multiline.scss.css'
+  ],
+  directives: const [
+    DefaultValueAccessor,
+    FocusableDirective,
+    NgFor,
+    NgIf,
+    NgModel,
+    NgSwitch,
+    NgSwitchWhen,
+  ],
+  preserveWhitespace: false,
+)
 class MaterialMultilineInputComponent extends BaseMaterialInput
     implements ReferenceDirective, AfterViewInit, OnDestroy {
   final ChangeDetectorRef _changeDetector;
@@ -185,6 +182,7 @@ class MaterialMultilineInputComponent extends BaseMaterialInput
 
   int get rows => _rows;
 
+  @Input()
   set rows(dynamic value) {
     _rows = getInt(value);
     _changeDetector.markForCheck();
@@ -192,6 +190,7 @@ class MaterialMultilineInputComponent extends BaseMaterialInput
 
   int get maxRows => _maxRows;
 
+  @Input()
   set maxRows(dynamic value) {
     _maxRows = getInt(value);
     _changeDetector.markForCheck();

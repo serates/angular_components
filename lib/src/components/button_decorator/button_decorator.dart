@@ -2,12 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:async';
 import 'dart:html';
 
 import 'package:angular/angular.dart';
 
-import '../../utils/angular/properties/properties.dart';
-import '../../utils/async/async.dart';
 import '../../utils/browser/events/events.dart';
 import '../focus/focus.dart';
 import '../mixins/has_tab_index.dart';
@@ -33,32 +32,24 @@ import '../mixins/has_tab_index.dart';
 class ButtonDirective extends RootFocusable with HasTabIndex {
   /// Will emit Event on mouse click or keyboard activation.
   @Output()
-  final LazyEventEmitter<UIEvent> trigger =
-      new LazyEventEmitter<UIEvent>.broadcast();
+  Stream<UIEvent> get trigger => _trigger.stream;
 
-  bool _disabled = false;
-  bool _tabbable = true;
+  final _trigger = new StreamController<UIEvent>.broadcast(sync: true);
 
   String _hostTabIndex;
 
   ButtonDirective(Element element) : super(element);
 
   /// String value to be passed to aria-disabled.
-  String get disabledStr => '$_disabled';
+  String get disabledStr => '$disabled';
 
   /// Is the button disabled.
-  bool get disabled => _disabled;
   @Input()
-  set disabled(dynamic value) {
-    _disabled = getBool(value);
-  }
+  bool disabled = false;
 
   /// Is the button tabbable.
-  bool get tabbable => _tabbable;
   @Input()
-  set tabbable(value) {
-    _tabbable = getBool(value);
-  }
+  bool tabbable = true;
 
   String get hostTabIndex => tabbable && !disabled ? _hostTabIndex : '-1';
 
@@ -72,16 +63,16 @@ class ButtonDirective extends RootFocusable with HasTabIndex {
 
   /// Triggers if not disabled.
   void handleClick(MouseEvent mouseEvent) {
-    if (_disabled) return;
-    trigger.add(mouseEvent);
+    if (disabled) return;
+    _trigger.add(mouseEvent);
   }
 
   /// Triggers on enter and space if not disabled.
   void handleKeyPress(KeyboardEvent keyboardEvent) {
-    if (_disabled) return;
+    if (disabled) return;
     int keyCode = keyboardEvent.keyCode;
     if (keyCode == KeyCode.ENTER || isSpaceKey(keyboardEvent)) {
-      trigger.add(keyboardEvent);
+      _trigger.add(keyboardEvent);
       // Required to prevent window from scrolling.
       keyboardEvent.preventDefault();
     }

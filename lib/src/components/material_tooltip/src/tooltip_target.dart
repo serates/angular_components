@@ -68,6 +68,7 @@ abstract class TooltipBehavior extends TooltipTarget {
   // Whether the mouse is currently inside the component.
   bool _isMouseInside = false;
 
+  @Output()
   Stream<bool> get tooltipActivate => _tooltipActivate.stream.distinct();
 
   TooltipBehavior(
@@ -129,18 +130,16 @@ abstract class TooltipBehavior extends TooltipTarget {
 ///   Allows for <strong>formatted</strong> <em>text</em>.
 /// </material-tooltip-text>```
 @Directive(
-    selector: '[clickableTooltipTarget]',
-    exportAs: 'tooltipTarget',
-    host: const {
-      '(mouseover)': 'onMouseOver()',
-      '(mouseleave)': 'onMouseLeave()',
-      '(click)': 'onClick()',
-      '(keypress)': r'kbTrigger($event)',
-      '(blur)': r'onBlur($event)',
-    },
-    outputs: const [
-      "tooltipActivate" /*From [TooltipBehavior]*/
-    ])
+  selector: '[clickableTooltipTarget]',
+  exportAs: 'tooltipTarget',
+  host: const {
+    '(mouseover)': 'onMouseOver()',
+    '(mouseleave)': 'onMouseLeave()',
+    '(click)': 'onClick()',
+    '(keypress)': r'kbTrigger($event)',
+    '(blur)': r'onBlur($event)',
+  },
+)
 class ClickableTooltipTargetDirective extends TooltipBehavior
     implements AfterViewInit, OnDestroy {
   StreamSubscription _tooltipSubscription;
@@ -208,13 +207,22 @@ abstract class TooltipTarget extends PopupSourceDirective
     implements ReferenceDirective {
   Tooltip _tooltip;
   final ViewContainerRef viewContainerRef;
+  final ElementRef _elementRef;
 
   TooltipTarget(DomPopupSourceFactory domPopupSourceFactory,
-      this.viewContainerRef, ElementRef elementRef)
-      : super(domPopupSourceFactory, elementRef, /* referenceDirective */ null);
+      this.viewContainerRef, this._elementRef)
+      : super(
+            domPopupSourceFactory, _elementRef, /* referenceDirective */ null);
 
   /// Sets the tooltip associated with this target.
   void setTooltip(Tooltip component) {
     _tooltip = component;
+  }
+
+  @override
+  set popupId(String id) {
+    super.popupId = id;
+    if (id == null) return;
+    _elementRef.nativeElement.setAttribute('aria-describedby', id);
   }
 }

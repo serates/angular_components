@@ -21,10 +21,7 @@ import './popup_source.dart';
 ///          #source="popupSource">
 ///     </div>
 ///     <template popup [relativeTo]="source"></template>
-@Directive(
-    selector: '[popupSource]',
-    inputs: const ['alignX: alignPositionX', 'alignY: alignPositionY'],
-    exportAs: 'popupSource')
+@Directive(selector: '[popupSource]', exportAs: 'popupSource')
 // TODO(google): Deprecate use of `relativeTo` with an Element, use instead.
 // TODO(google): Move the setting of alignOriginX and Y into DomPopupSource.
 class PopupSourceDirective
@@ -37,6 +34,7 @@ class PopupSourceDirective
   Alignment _alignOriginY = Alignment.Start;
 
   PopupSource _popupSource;
+  String _popupId;
 
   PopupSourceDirective(this._domPopupSourceFactory, this._elementRef,
       @Optional() this._referenceDirective);
@@ -61,6 +59,7 @@ class PopupSourceDirective
   @override
   Alignment get alignOriginX => _popupSource.alignOriginX;
 
+  @Input('alignPositionX')
   set alignX(String align) {
     _alignOriginX = new Alignment.parse(align);
     _updateSource();
@@ -69,6 +68,7 @@ class PopupSourceDirective
   @override
   Alignment get alignOriginY => _popupSource.alignOriginY;
 
+  @Input('alignPositionY')
   set alignY(String align) {
     _alignOriginY = new Alignment.parse(align);
     _updateSource();
@@ -85,11 +85,21 @@ class PopupSourceDirective
   @override
   bool get isRtl => _popupSource.isRtl;
 
+  @override
+  set popupId(String id) {
+    _popupId = id;
+    _popupSource?.popupId = id;
+  }
+
   void _updateSource() {
     _popupSource = _domPopupSourceFactory.createPopupSource(
       _elementRef.nativeElement,
       alignOriginX: _alignOriginX,
       alignOriginY: _alignOriginY,
     );
+
+    if (_popupId != null) {
+      _popupSource.popupId = _popupId;
+    }
   }
 }

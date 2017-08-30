@@ -7,9 +7,6 @@ import 'dart:math';
 
 import 'package:angular/angular.dart';
 
-import '../../../utils/angular/properties/properties.dart';
-import '../../../utils/async/async.dart';
-import '../../enums/alignment.dart';
 import './popup_event.dart';
 import './popup_source.dart';
 import './popup_state.dart';
@@ -39,26 +36,18 @@ abstract class PopupInterface {
   @Output('visibleChange')
   Stream<bool> get onVisible;
 
-  /// Sets the x-axis *content* alignment of the popup.
-  @Input()
-  set alignContentX(String alignContentX);
-
-  /// Sets the y-axis *content* alignment of the popup.
-  @Input()
-  set alignContentY(String alignContentY);
-
   /// Sets whether the popup should dismiss (close) itself on document press.
   @Input()
-  set autoDismiss(dynamic autoDismiss);
+  set autoDismiss(bool autoDismiss);
 
   /// Sets whether the popup should automatically reposition itself based on
   /// space available relative to the viewport.
   @Input()
-  set enforceSpaceConstraints(dynamic enforceSpaceConstraints);
+  set enforceSpaceConstraints(bool enforceSpaceConstraints);
 
   /// Sets whether popup should set a minimum width to the width of [source].
   @Input()
-  set matchMinSourceWidth(dynamic matchMinSourceWidth);
+  set matchMinSourceWidth(bool matchMinSourceWidth);
 
   /// Sets the x-offset to where the popup will be positioned ultimately.
   @Input()
@@ -82,7 +71,7 @@ abstract class PopupInterface {
 
   /// Sets whether the [source] should be tracked for changes.
   @Input()
-  set trackLayoutChanges(dynamic trackLayoutChanges);
+  set trackLayoutChanges(bool trackLayoutChanges);
 
   /// Sets whether the popup should be shown.
   ///
@@ -98,15 +87,20 @@ abstract class PopupInterface {
 ///
 /// __Example use__:
 ///     class MyPopupComponent extends PopupEvents implements PopupInterface {}
+// TODO(google): Consider moving these into material_popup as there aren't
+// any other users of these streams.
 abstract class PopupEvents {
-  final LazyEventEmitter<PopupEvent> onOpen =
-      new LazyEventEmitter<PopupEvent>();
+  Stream<PopupEvent> get onOpen => onOpenController.stream;
+  final StreamController<PopupEvent> onOpenController =
+      new StreamController<PopupEvent>.broadcast(sync: true);
 
-  final LazyEventEmitter<PopupEvent> onClose =
-      new LazyEventEmitter<PopupEvent>();
+  Stream<PopupEvent> get onClose => onCloseController.stream;
+  final StreamController<PopupEvent> onCloseController =
+      new StreamController<PopupEvent>.broadcast(sync: true);
 
-  final LazyEventEmitter<bool> onVisible =
-      new LazyEventEmitter<bool>.broadcast();
+  Stream<bool> get onVisible => onVisibleController.stream;
+  final StreamController<bool> onVisibleController =
+      new StreamController<bool>.broadcast(sync: true);
 }
 
 /// A partial that implements the setters of [PopupBase] by writing to [state].
@@ -115,28 +109,18 @@ abstract class PopupBase implements PopupInterface {
   PopupState get state;
 
   @override
-  set alignContentX(String alignContentX) {
-    state.alignContentX = new Alignment.parse(alignContentX);
+  set autoDismiss(bool autoDismiss) {
+    state.autoDismiss = autoDismiss;
   }
 
   @override
-  set alignContentY(String alignContentY) {
-    state.alignContentY = new Alignment.parse(alignContentY);
+  set enforceSpaceConstraints(bool enforceSpaceConstraints) {
+    state.enforceSpaceConstraints = enforceSpaceConstraints;
   }
 
   @override
-  set autoDismiss(dynamic autoDismiss) {
-    state.autoDismiss = getBool(autoDismiss);
-  }
-
-  @override
-  set enforceSpaceConstraints(dynamic enforceSpaceConstraints) {
-    state.enforceSpaceConstraints = getBool(enforceSpaceConstraints);
-  }
-
-  @override
-  set matchMinSourceWidth(dynamic matchMinSourceWidth) {
-    state.matchMinSourceWidth = getBool(matchMinSourceWidth);
+  set matchMinSourceWidth(bool matchMinSourceWidth) {
+    state.matchMinSourceWidth = matchMinSourceWidth;
   }
 
   @override
@@ -160,8 +144,8 @@ abstract class PopupBase implements PopupInterface {
   }
 
   @override
-  set trackLayoutChanges(dynamic trackLayoutChanges) {
-    state.trackLayoutChanges = getBool(trackLayoutChanges);
+  set trackLayoutChanges(bool trackLayoutChanges) {
+    state.trackLayoutChanges = trackLayoutChanges;
   }
 }
 
@@ -172,37 +156,13 @@ abstract class PopupBase implements PopupInterface {
 /// want the same properties as a popup without the verbosity of re-typing.
 abstract class PopupComposite implements PopupInterface {
   @override
-  String alignContentX = 'start';
+  bool autoDismiss = true;
 
   @override
-  String alignContentY = 'start';
-
-  bool _autoDismiss = true;
-
-  bool get autoDismiss => _autoDismiss;
+  bool enforceSpaceConstraints = false;
 
   @override
-  set autoDismiss(value) {
-    _autoDismiss = getBool(value);
-  }
-
-  bool _enforceSpaceConstraints = false;
-
-  bool get enforceSpaceConstraints => _enforceSpaceConstraints;
-
-  @override
-  set enforceSpaceConstraints(value) {
-    _enforceSpaceConstraints = getBool(value);
-  }
-
-  bool _matchMinSourceWidth = true;
-
-  bool get matchMinSourceWidth => _matchMinSourceWidth;
-
-  @override
-  set matchMinSourceWidth(value) {
-    _matchMinSourceWidth = getBool(value);
-  }
+  bool matchMinSourceWidth = true;
 
   @override
   int offsetX = 0;
@@ -216,23 +176,11 @@ abstract class PopupComposite implements PopupInterface {
   @override
   PopupSource source;
 
-  bool _trackLayoutChanges = true;
-
-  bool get trackLayoutChanges => _trackLayoutChanges;
+  @override
+  bool trackLayoutChanges = true;
 
   @override
-  set trackLayoutChanges(value) {
-    _trackLayoutChanges = value as bool;
-  }
-
-  bool _visible = false;
-
-  bool get visible => _visible;
-
-  @override
-  set visible(bool visible) {
-    _visible = visible;
-  }
+  bool visible = false;
 
   @override
   void toggle() {

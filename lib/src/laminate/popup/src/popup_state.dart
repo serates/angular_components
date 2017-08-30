@@ -7,7 +7,6 @@ import 'dart:async';
 import 'package:observable/observable.dart';
 import 'package:quiver/core.dart';
 
-import '../../../utils/angular/properties/properties.dart';
 import '../../enums/alignment.dart';
 import './popup_source.dart';
 
@@ -22,9 +21,7 @@ class PopupState extends Observable {
 
   /// Create a new, empty popup state (with defaults).
   factory PopupState(
-      {Alignment alignContentX: Alignment.Start,
-      Alignment alignContentY: Alignment.Start,
-      bool autoDismiss: true,
+      {bool autoDismiss: true,
       bool enforceSpaceConstraints: false,
       bool matchMinSourceWidth: false,
       int offsetX: 0,
@@ -33,8 +30,6 @@ class PopupState extends Observable {
       PopupSource source,
       bool trackLayoutChanges: true}) {
     return new PopupState._(new ObservableMap<Symbol, dynamic>.from({
-      #alignContentX: alignContentX,
-      #alignContentY: alignContentY,
       #autoDismiss: autoDismiss,
       #enforceSpaceConstraints: enforceSpaceConstraints,
       #matchMinSourceWidth: matchMinSourceWidth,
@@ -69,22 +64,6 @@ class PopupState extends Observable {
         return propertyRecords;
       });
 
-  /// How to align the inner content of the popup on the x-axis.
-  ///
-  /// This is equivalent to [OverlayState.alignX].
-  Alignment get alignContentX => _backingMap[#alignContentX];
-  set alignContentX(Alignment alignContentX) {
-    _backingMap[#alignContentX] = alignContentX;
-  }
-
-  /// How to align the inner content of the popup on the y-axis.
-  ///
-  /// This is equivalent to [OverlayState.alignY].
-  Alignment get alignContentY => _backingMap[#alignContentY];
-  set alignContentY(Alignment alignContentY) {
-    _backingMap[#alignContentY] = alignContentY;
-  }
-
   /// If set to true, the popup should attempt to close itself when a mouse
   /// click or finger tap is detected outside of the bounds of the popup.
   bool get autoDismiss => _backingMap[#autoDismiss];
@@ -96,8 +75,8 @@ class PopupState extends Observable {
   /// positioning and layout depending on the size of the inner content and the
   /// distance to the viewport edges.
   bool get enforceSpaceConstraints => _backingMap[#enforceSpaceConstraints];
-  set enforceSpaceConstraints(enforceSpaceConstraints) {
-    _backingMap[#enforceSpaceConstraints] = getBool(enforceSpaceConstraints);
+  set enforceSpaceConstraints(bool enforceSpaceConstraints) {
+    _backingMap[#enforceSpaceConstraints] = enforceSpaceConstraints;
   }
 
   /// If true, the popup will set a min-width to the width of [source].
@@ -148,8 +127,6 @@ class PopupState extends Observable {
   @override
   bool operator ==(o) =>
       o is PopupState &&
-      o.alignContentX == alignContentX &&
-      o.alignContentY == alignContentY &&
       o.autoDismiss == autoDismiss &&
       o.enforceSpaceConstraints == enforceSpaceConstraints &&
       o.matchMinSourceWidth == matchMinSourceWidth &&
@@ -161,8 +138,6 @@ class PopupState extends Observable {
 
   @override
   int get hashCode => hashObjects([
-        alignContentX,
-        alignContentY,
         autoDismiss,
         enforceSpaceConstraints,
         matchMinSourceWidth,
